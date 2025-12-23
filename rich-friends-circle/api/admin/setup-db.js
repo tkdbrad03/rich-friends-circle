@@ -30,7 +30,8 @@ module.exports = async (req, res) => {
         looking_for TEXT,
         offering TEXT,
         finished_scorecard TEXT,
-        created_at TIMESTAMP DEFAULT NOW()
+        created_at TIMESTAMP DEFAULT NOW(),
+        updated_at TIMESTAMP DEFAULT NOW()
       );
 
       CREATE TABLE IF NOT EXISTS sessions (
