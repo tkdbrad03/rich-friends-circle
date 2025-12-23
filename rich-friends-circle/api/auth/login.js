@@ -22,7 +22,7 @@ module.exports = async (req, res) => {
 
     // Find member by email
     const result = await client.query(
-      'SELECT id, email, name, pin_number, is_admin, photo_url FROM members WHERE email = $1',
+      'SELECT id, email, name, pin_number, photo_url FROM members WHERE email = $1',
       [email.toLowerCase()]
     );
 
@@ -51,7 +51,6 @@ module.exports = async (req, res) => {
         name: member.name,
         email: member.email,
         pin_number: member.pin_number,
-        is_admin: member.is_admin,
         photo_url: member.photo_url
       }
     });
