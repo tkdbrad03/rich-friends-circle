@@ -13,14 +13,27 @@ module.exports = async (req, res) => {
   try {
     await client.connect();
 
+    // Check if table exists first
+    const tableCheck = await client.query(`
+      SELECT EXISTS (
+        SELECT FROM information_schema.tables 
+        WHERE table_name = 'resources'
+      );
+    `);
+
+    if (!tableCheck.rows[0].exists) {
+      return res.status(200).json([]);
+    }
+
     const result = await client.query(
-      'SELECT * FROM golf_essentials ORDER BY display_order ASC, created_at DESC'
+      'SELECT * FROM resources ORDER BY created_at DESC'
     );
 
     return res.status(200).json(result.rows);
   } catch (error) {
-    console.error('List essentials error:', error);
-    return res.status(500).json({ error: 'Internal server error' });
+    console.error('List resources error:', error);
+    // Return empty array instead of error so page loads
+    return res.status(200).json([]);
   } finally {
     await client.end();
   }
