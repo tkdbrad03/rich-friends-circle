@@ -1,7 +1,7 @@
 // Shared member functions for all pages
 
 function getInitials(name) {
-  if (!name) return 'FM';
+  if (!name) return 'M';
   return name.split(' ').map(n => n[0]).join('').toUpperCase().slice(0, 2);
 }
 
