@@ -1,13 +1,14 @@
 {
-  "name": "tee-elite-circle",
+  "name": "rich-friends-circle",
   "version": "1.0.0",
-  "description": "The Tee Elite Circle - Private Golf Mastermind for Women",
+  "description": "The Rich Friends Circle - Community for Ambitious Women",
   "main": "index.html",
   "scripts": {
     "dev": "vercel dev",
     "build": "echo 'Build complete'"
   },
   "dependencies": {
+    "@supabase/supabase-js": "^2.39.0",
     "@vercel/blob": "latest",
     "bcryptjs": "^2.4.3",
     "nodemailer": "^6.9.7",
