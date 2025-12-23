@@ -37,7 +37,7 @@ async function loadMemberHeader() {
 function addAdminLink() {
   // Desktop nav
   const headerNav = document.querySelector('.header-nav');
-  if (headerNav) {
+  if (headerNav && !headerNav.querySelector('.admin-link')) {
     const adminLink = document.createElement('a');
     adminLink.href = '/admin.html';
     adminLink.className = 'nav-link admin-link';
@@ -48,16 +48,13 @@ function addAdminLink() {
   
   // Mobile nav
   const mobileNav = document.querySelector('.mobile-nav');
-  if (mobileNav) {
-    const logoutLink = document.getElementById('logout-link');
-    if (logoutLink) {
-      const adminLink = document.createElement('a');
-      adminLink.href = '/admin.html';
-      adminLink.className = 'mobile-nav-link admin-link';
-      adminLink.textContent = 'Admin';
-      adminLink.style.color = '#e8ccc8';
-      mobileNav.insertBefore(adminLink, logoutLink);
-    }
+  if (mobileNav && !mobileNav.querySelector('.admin-link')) {
+    const adminLink = document.createElement('a');
+    adminLink.href = '/admin.html';
+    adminLink.className = 'mobile-nav-link admin-link';
+    adminLink.textContent = 'Admin';
+    adminLink.style.color = '#e8ccc8';
+    mobileNav.appendChild(adminLink);
   }
 }
 
