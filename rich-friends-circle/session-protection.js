@@ -1,4 +1,4 @@
-// Session protection utilities for Tee Elite Circle
+// Session protection utilities for Rich Friends Circle
 
 const crypto = require('crypto');
 
@@ -19,7 +19,7 @@ function getSessionFromRequest(req) {
   
   const sessionCookie = cookies
     .split(';')
-    .find(c => c.trim().startsWith('tec_session='));
+    .find(c => c.trim().startsWith('rfc_session='));
   
   if (!sessionCookie) return null;
   
@@ -28,12 +28,12 @@ function getSessionFromRequest(req) {
 
 // Create session cookie header
 function createSessionCookie(token, maxAge = 86400 * 7) {
-  return `tec_session=${token}; Path=/; HttpOnly; Secure; SameSite=Strict; Max-Age=${maxAge}`;
+  return `rfc_session=${token}; Path=/; HttpOnly; Secure; SameSite=Strict; Max-Age=${maxAge}`;
 }
 
 // Clear session cookie header
 function clearSessionCookie() {
-  return 'tec_session=; Path=/; HttpOnly; Secure; SameSite=Strict; Max-Age=0';
+  return 'rfc_session=; Path=/; HttpOnly; Secure; SameSite=Strict; Max-Age=0';
 }
 
 // Protected route wrapper
