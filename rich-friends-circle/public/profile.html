@@ -440,7 +440,7 @@
         </div>
 
         <div class="profile-pin">
-          <span class="profile-pin-label">Member</span>
+          <span class="profile-pin-label" id="profile-pin-label">Member</span>
           <span class="profile-pin-number" id="profile-pin">#01</span>
         </div>
 
@@ -665,6 +665,7 @@
     function populateViewOnly(member) {
       document.getElementById('view-profile-name').textContent = member.name || 'Member';
       document.getElementById('profile-pin').textContent = `#${String(member.pin_number || 1).padStart(2, '0')}`;
+      document.getElementById('profile-pin-label').textContent = member.pin_number === 1 ? 'Admin' : 'Member';
       document.getElementById('photo-initials').textContent = getInitials(member.name);
 
       if (member.photo_url) {
@@ -692,6 +693,7 @@
       document.getElementById('user-initials').textContent = initials;
       document.getElementById('photo-initials').textContent = initials;
       document.getElementById('profile-pin').textContent = `#${String(member.pin_number || 1).padStart(2, '0')}`;
+      document.getElementById('profile-pin-label').textContent = member.pin_number === 1 ? 'Admin' : 'Member';
 
       if (member.photo_url) {
         document.getElementById('profile-photo').innerHTML = `<img src="${member.photo_url}" alt="${member.name}">`;
