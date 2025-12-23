@@ -92,7 +92,7 @@ module.exports = async (req, res) => {
 
     // Update member photo_url
     await client.query(
-      'UPDATE members SET photo_url = $1, updated_at = NOW() WHERE id = $2',
+      'UPDATE members SET photo_url = $1 WHERE id = $2',
       [blob.url, memberId]
     );
 
