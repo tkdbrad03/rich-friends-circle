@@ -234,7 +234,7 @@
   <!-- MAIN CONTENT -->
   <main class="member-main">
     <div class="page-header">
-      <p class="page-label">12 Founding Members</p>
+      <p class="page-label" id="member-count">Members</p>
       <h1 class="page-title">Members</h1>
       <p class="page-subtitle">The women who said yes.</p>
     </div>
@@ -285,6 +285,9 @@
         const members = await res.json();
         const grid = document.getElementById('members-grid');
         
+        // Update member count
+        document.getElementById('member-count').textContent = `${members.length} Members`;
+        
         if (members.length === 0) {
           grid.innerHTML = '<div class="loading-state">No members yet.</div>';
           return;
@@ -298,7 +301,7 @@
                 : `<span class="initials">${getInitials(member.name)}</span>`
               }
             </div>
-            <span class="member-pin">Founding Member #${String(member.pin_number).padStart(2, '0')}</span>
+            <span class="member-pin">Member</span>
             <h3 class="member-name">${member.name}</h3>
             ${member.bio ? `<p class="member-bio">${member.bio}</p>` : ''}
             <div class="member-tags">
@@ -316,7 +319,7 @@
     }
 
     function getInitials(name) {
-      if (!name) return 'FM';
+      if (!name) return 'M';
       return name.split(' ').map(n => n[0]).join('').toUpperCase().slice(0, 2);
     }
 
