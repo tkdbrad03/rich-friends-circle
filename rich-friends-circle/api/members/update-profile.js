@@ -40,8 +40,7 @@ module.exports = async (req, res) => {
         bio = $2,
         offering = $3,
         looking_for = $4,
-        finished_scorecard = $5,
-        updated_at = NOW()
+        finished_scorecard = $5
       WHERE id = $6`,
       [name, bio, offering, looking_for, finished_scorecard, memberId]
     );
