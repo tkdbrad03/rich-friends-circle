@@ -15,94 +15,32 @@ module.exports = async (req, res) => {
   try {
     await client.connect();
 
-    const { 
-      full_name, 
-      email, 
-      phone, 
-      location, 
-      pin_number
-    } = req.body;
+    const { full_name, email, phone, pin_number } = req.body;
 
     // Validate required fields
-    if (!full_name || !email || !location || !pin_number) {
-      return res.status(400).json({ error: 'Missing required fields' });
+    if (!full_name || !email || !pin_number) {
+      return res.status(400).json({ error: 'Name, email, and pin number are required' });
     }
 
-    // Check if pin number is already taken in applications
-    const existingAppPin = await client.query(
-      'SELECT id FROM applications WHERE pin_number = $1',
-      [pin_number]
-    );
-    
-    if (existingAppPin.rows.length > 0) {
-      return res.status(400).json({ error: `Pin #${String(pin_number).padStart(2, '0')} is already assigned` });
-    }
-
-    // Check if pin number is already taken in members
-    const existingMemberPin = await client.query(
+    // Check if pin number is already taken
+    const existingPin = await client.query(
       'SELECT id FROM members WHERE pin_number = $1',
       [pin_number]
     );
     
-    if (existingMemberPin.rows.length > 0) {
+    if (existingPin.rows.length > 0) {
       return res.status(400).json({ error: `Pin #${String(pin_number).padStart(2, '0')} is already assigned` });
     }
 
-    // Check if email already exists in applications
-    const existingAppEmail = await client.query(
-      'SELECT id FROM applications WHERE email = $1',
-      [email]
+    // Check if email already exists
+    const existingEmail = await client.query(
+      'SELECT id FROM members WHERE email = $1',
+      [email.toLowerCase()]
     );
     
-    if (existingAppEmail.rows.length > 0) {
+    if (existingEmail.rows.length > 0) {
       return res.status(400).json({ error: 'A member with this email already exists' });
     }
-
-    // Check if email already exists in members
-    const existingMemberEmail = await client.query(
-      'SELECT id FROM members WHERE email = $1',
-      [email]
-    );
-    
-    if (existingMemberEmail.rows.length > 0) {
-      return res.status(400).json({ error: 'A member account with this email already exists' });
-    }
-
-    // Insert into applications table
-    const appResult = await client.query(
-      `INSERT INTO applications (
-        full_name,
-        email,
-        phone,
-        location,
-        pin_number,
-        paid_in_full,
-        deposit_paid,
-        interest_level,
-        status,
-        golf_relationship,
-        season_of_life,
-        what_draws_you,
-        what_to_elevate,
-        created_at
-      ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, NOW())
-      RETURNING id`,
-      [
-        full_name,
-        email,
-        phone || null,
-        location,
-        pin_number,
-        true,
-        true,
-        'Ready to secure my founding seat',
-        'member',
-        'Founding Member - Direct Add',
-        'Founding Member',
-        'Founding Member - Direct Add',
-        'Founding Member - Direct Add'
-      ]
-    );
 
     // Generate temporary password
     const tempPassword = 'RichFriends' + Math.random().toString(36).substring(2, 8).toUpperCase();
@@ -110,9 +48,9 @@ module.exports = async (req, res) => {
 
     // Create member account
     await client.query(
-      `INSERT INTO members (email, password_hash, name, pin_number, bio, created_at)
+      `INSERT INTO members (email, password_hash, name, phone, pin_number, created_at)
        VALUES ($1, $2, $3, $4, $5, NOW())`,
-      [email, passwordHash, full_name, pin_number, '']
+      [email.toLowerCase(), passwordHash, full_name, phone || null, pin_number]
     );
 
     // Send welcome email with login credentials
@@ -128,18 +66,15 @@ module.exports = async (req, res) => {
       // Don't fail the request if email fails
     }
 
-    return res.status(200).json({ 
-      success: true, 
-      id: appResult.rows[0].id,
-      email: email,
+    return res.status(200).json({
+      success: true,
       temp_password: tempPassword,
-      pin_number: pin_number,
-      message: 'Member added and account created successfully'
+      message: `Member added successfully. Welcome email sent to ${email}`
     });
 
   } catch (error) {
     console.error('Error adding member:', error);
-    return res.status(500).json({ error: 'Failed to add member' });
+    return res.status(500).json({ error: error.message || 'Internal server error' });
   } finally {
     await client.end();
   }
