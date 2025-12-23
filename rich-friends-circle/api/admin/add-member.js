@@ -105,13 +105,13 @@ module.exports = async (req, res) => {
     );
 
     // Generate temporary password
-    const tempPassword = 'TeeElite' + Math.random().toString(36).substring(2, 8).toUpperCase();
+    const tempPassword = 'RichFriends' + Math.random().toString(36).substring(2, 8).toUpperCase();
     const passwordHash = await bcrypt.hash(tempPassword, 10);
 
     // Create member account
     await client.query(
-      `INSERT INTO members (email, password_hash, name, pin_number, bio, created_at, updated_at)
-       VALUES ($1, $2, $3, $4, $5, NOW(), NOW())`,
+      `INSERT INTO members (email, password_hash, name, pin_number, bio, created_at)
+       VALUES ($1, $2, $3, $4, $5, NOW())`,
       [email, passwordHash, full_name, pin_number, '']
     );
 
